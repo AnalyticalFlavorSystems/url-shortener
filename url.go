@@ -14,10 +14,11 @@ const PORT = ":3000"
 var client *redis.Client
 
 func init() {
-	client = redis.NewClient(&redis.Options{
-		Addr:     "redis.default.cluster.local:6379",
-		Password: "",
-		DB:       0,
+	client = redis.NewFailoverClient(&redis.FailoverOptions{
+		SentinelAddrs: []string{"redis-sentinel.default.cluster.local:26379"},
+		MasterName:    "mymaster",
+		Password:      "",
+		DB:            0,
 	})
 	_, err := client.Ping().Result()
 	if err != nil {
